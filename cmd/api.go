@@ -1,6 +1,7 @@
 package main
 
 import (
+	repo "e-commerce-api-golang/internal/adapters/postgresql/sqlc"
 	"e-commerce-api-golang/internal/products"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5"
 )
 
 func (app *application) mount() http.Handler {
@@ -28,7 +30,7 @@ func (app *application) mount() http.Handler {
 		w.Write([]byte("All good for now"))
 	})
 
-	productService := products.NewService()
+	productService := products.NewService(repo.New(app.db))
 	productHandler := products.NewHandler(productService)
 
 	r.Get("/products", productHandler.ListProduct)
@@ -52,6 +54,7 @@ func (app *application) run(h http.Handler) error {
 
 type application struct {
 	config config
+	db  *pgx.Conn
 }
 
 type config struct {

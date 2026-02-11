@@ -20,7 +20,7 @@ func main() {
 	cgf := config{
 		addr: ":8080",
 		db: dbConfig{
-			dsn: env.GetString("GOOSE_DB_STRING", "user=postgres password=postgres dbname=ecommerce-golang sslmode=disable"),
+			dsn: env.GetString("GOOSE_DBSTRING", "user=postgres password=postgres dbname=ecommerce-golang sslmode=disable"),
 		},
 	}
 
@@ -35,6 +35,7 @@ func main() {
 
 	api := application{
 		config: cgf,
+		db: conn,
 	}
 
 	logger.Info("Connected to Database", "dsn", cgf.db.dsn)
